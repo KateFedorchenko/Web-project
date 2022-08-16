@@ -10,10 +10,16 @@ import java.io.IOException;
 public class SimpleServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String name = req.getParameter("name");
-        resp.getWriter().write("hello, " + name);
-
+        String sum = req.getParameter("+");
+        String multiply = req.getParameter("*");
+        String minus = req.getParameter("-");
+        resp.getWriter().write(1 +sum + 2);
     }
+
+//    @Override
+//    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        response.getWriter().println(request.getParameter("field"));
+//    }
 }
 
 // write servlet with 3 params = 2 numbers and 1 string
