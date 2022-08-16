@@ -10,17 +10,29 @@ import java.io.IOException;
 public class SimpleServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String sum = req.getParameter("+");
-        String multiply = req.getParameter("*");
-        String minus = req.getParameter("-");
-        resp.getWriter().write(1 +sum + 2);
+        int number1 = Integer.parseInt(req.getParameter("number1"));
+        int number2 = Integer.parseInt(req.getParameter("number2"));
+        // operation in (sum,minus,divide,multiply)
+        String operation = req.getParameter("operation");
+        int result = 0;                     //TODO how not to initialize result variable here
+        if ("minus".equals(operation)) {
+            result = number1 - number2;
+        }
+        if ("sum".equals(operation)) {
+            result = number1 + number2;
+        }
+        if ("multiply".equals(operation)) {
+            result = number1 * number2;
+        }
+        if ("divide".equals(operation)) {
+            result = number1 / number2;
+        }
+        resp.getWriter().println(result);
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.getWriter().println("Received numbers!");
-    }
 }
+///simple-servlet?number1=1&number2=4&operation=divide
+
 
 // write servlet with 3 params = 2 numbers and 1 string
 // string = type of operation (possible values: + - / *)
