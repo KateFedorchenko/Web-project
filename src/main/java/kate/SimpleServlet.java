@@ -16,10 +16,10 @@ public class SimpleServlet extends HttpServlet {
         resp.getWriter().write(1 +sum + 2);
     }
 
-//    @Override
-//    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        response.getWriter().println(request.getParameter("field"));
-//    }
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.getWriter().println("Received numbers!");
+    }
 }
 
 // write servlet with 3 params = 2 numbers and 1 string
