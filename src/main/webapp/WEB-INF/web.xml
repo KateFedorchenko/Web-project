@@ -12,4 +12,13 @@
         <servlet-name>SimpleServlet</servlet-name>
         <url-pattern>/simple-servlet</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ExpensesJournal</servlet-name>
+        <servlet-class>kate.ExpensesJournal</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ExpensesJournal</servlet-name>
+        <url-pattern>/expenses-journal</url-pattern>
+    </servlet-mapping>
 </web-app>
