@@ -49,11 +49,14 @@ public class ExpensesJournal extends HttpServlet {
 
         if ("showHistory".equals(operation)) {
             htmlResponse.append("<h2>Expenses Journal</h2><table border=\"1\"><tr><th>Amount</th><th>Date</th></tr>");
-            for (Integer a : integerList) {
-                htmlResponse.append("<tr><td>" + a + "</td></tr>");
-            }
-            for (LocalDate d : localDateList) {
-                htmlResponse.append("<tr><td>" + d + "</td></tr>");
+            for (int a = 0; a < integerList.size(); a++) {
+                htmlResponse.append("<tr>");
+                htmlResponse.append("<td>" + integerList.get(a) + "</td>");
+                for (int d = a; d < localDateList.size(); d++) {
+                    htmlResponse.append("<td>" + localDateList.get(d) + "</td>");
+                    break;
+                }
+                htmlResponse.append("</tr>");
             }
             htmlResponse.append("</table>");
             resp.getWriter().println(htmlResponse);
