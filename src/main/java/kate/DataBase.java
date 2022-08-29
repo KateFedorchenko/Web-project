@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @WebServlet(urlPatterns = "/database", name = "DataBase")
 public class DataBase extends HttpServlet {
@@ -25,22 +26,25 @@ public class DataBase extends HttpServlet {
             if (hm.containsKey(key)) {
                 resp.getWriter().println("The value " + hm.get(key) + " stands for the key " + key);
             } else {
-                resp.setStatus(404);
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
                 resp.getWriter().println("No such operation exists in the database!");
             }
+        } else {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
     /**
-     * POST W/O body
-     * localhost:8080/database?operation=addOrUpdate&key=foo&value=1
+     * POST with body
+     * localhost:8080/database?operation=addOrUpdate&key=foo
+     * body: 1
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int value = Integer.parseInt(req.getReader().readLine());
         String operation = req.getParameter("operation");
         if ("addOrUpdate".equals(operation)) {
             String key = req.getParameter("key");
-            int value = Integer.parseInt(req.getParameter("value"));
             if (hm.containsKey(key)) {
                 resp.getWriter().println("The previous value is " + hm.get(key) + "." +
                         " The new data is " + value + "." +
@@ -49,8 +53,11 @@ public class DataBase extends HttpServlet {
                 resp.getWriter().println("The new value " + value + " and key " + key + " have been created!");
             }
             hm.compute(key, (k, oldValue) -> oldValue == null ? value : value + oldValue);
+        } else {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
+
 }
 
 
