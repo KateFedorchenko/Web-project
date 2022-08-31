@@ -41,7 +41,7 @@ public class DataBase extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int value = Integer.parseInt(req.getReader().readLine());
+        int value = Integer.parseInt(req.getReader().readLine());//long
         String operation = req.getParameter("operation");
         if ("addOrUpdate".equals(operation)) {
             String key = req.getParameter("key");
