@@ -5,7 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.DriverManager;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,6 +33,20 @@ class CityDaoTest {
     void whenRequestCityWithId0ShouldReturnNull(){
         Optional<City> actual = cityDao.findById(0);
         assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    void whenRequestedAllCitiesShouldReturnList(){
+        List<String> actual = cityDao.getAll();
+        List<String> expected = new ArrayList<>(List.of("Kabul","Qandahar"));   // how to check such things? when I do not know the limit.
+        assertEquals(expected,actual);
+    }
+
+    @Test
+    void whenRequested10MostPopulatedCitiesShouldReturnList(){
+        List<String> actual = cityDao.find10MostPopulatedCities();
+        List<String> expected = new ArrayList<>(List.of("Kabul","Qandahar"));
+        assertEquals(expected,actual);
     }
 
 

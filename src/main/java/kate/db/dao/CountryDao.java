@@ -1,47 +1,48 @@
 package kate.db.dao;
 
-import kate.db.model.City;
+import kate.db.model.Country;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CityDao {      // dao - data access object
+public class CountryDao {
     private final Connection connection;
 
-    public CityDao(Connection connection) {
+    public CountryDao(Connection connection) {
         this.connection = connection;
     }
 
-    public Optional<City> findById(long id) {
+    public Optional<Country> findByCode(String code) {
         try {
             Statement statement = connection.createStatement();
 
-            ResultSet resultSet = statement.executeQuery("select * from city where id = " + id);
+            ResultSet resultSet = statement.executeQuery("select * from country where code=\"" + code + "\"");
 
             if (!resultSet.next()) {
                 return Optional.empty();
             }
 
             String name = resultSet.getString("name");
+            String continent = resultSet.getString("continent");
             long population = resultSet.getLong("population");
+            String localName = resultSet.getString("localName");
+            String indepYear = resultSet.getString("indepYear");
 
-            return Optional.of(new City(id, name, population));
+            return Optional.of(new Country(code, name, continent, population, localName, indepYear));
         } catch (Exception e) {
-            throw new RuntimeException(e);//origin exc never to be lost
+            throw new RuntimeException(e);
         }
-
     }
 
     public List<String> getAll() {
         try {
             Statement statement = connection.createStatement();
 
-            ResultSet resultSet = statement.executeQuery("select name from city");
+            ResultSet resultSet = statement.executeQuery("select name from country");
 
             return createListAndAddDataFromDB(resultSet);
         } catch (Exception e) {
@@ -54,11 +55,11 @@ public class CityDao {      // dao - data access object
      *
      * @return 10 Most Populated Cities
      */
-    public List<String> find10MostPopulatedCities() {
+    public List<String> find10MostPopulatedCountries() {
         try {
             Statement statement = connection.createStatement();
 
-            ResultSet resultSet = statement.executeQuery("select name from city order by population desc limit 10");
+            ResultSet resultSet = statement.executeQuery("select name from country order by population desc limit 10");
 
             return createListAndAddDataFromDB(resultSet);
         } catch (Exception e) {
@@ -66,8 +67,22 @@ public class CityDao {      // dao - data access object
         }
     }
 
+    public List<String> findAllCountriesWhichStartsAt(String c) {
+        try {
+            Statement statement = connection.createStatement();
+
+            ResultSet resultSet = statement.executeQuery("select * from country where name like \"" + c + "%\"");
+
+            return createListAndAddDataFromDB(resultSet);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     /**
      * Attempt to get rid of duplicates.
+     *
      * @param resultSet
      * @return list
      */
@@ -83,13 +98,4 @@ public class CityDao {      // dao - data access object
             throw new RuntimeException(e);
         }
     }
-
-
 }
-
-// 1) add getAll() method -> return all cities, which type is it?
-// 2) add 'business' method to that dao object
-// 3) duplicates -> to optimize code ?
-// 4) new class Country alike City and CountryDao alike CityDao -> the same methods to be added + new ones (e.g. the largest countries)
-
-// + test
