@@ -25,7 +25,7 @@ class CityDaoTest {
     @Test
     void whenRequestCityWithId1ShouldReturnKabul(){
         Optional<City> actual = cityDao.findById(1);
-        City expected = new City(1,"Kabul",1_780_000);
+        City expected = new City(1,"Kabul",1_780_000,"AFG");
         assertEquals(expected,actual.get());
     }
 

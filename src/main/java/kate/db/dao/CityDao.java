@@ -2,10 +2,7 @@ package kate.db.dao;
 
 import kate.db.model.City;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,10 +25,7 @@ public class CityDao {      // dao - data access object
                 return Optional.empty();
             }
 
-            String name = resultSet.getString("name");
-            long population = resultSet.getLong("population");
-
-            return Optional.of(new City(id, name, population));
+            return Optional.of(makeCityFromRS(resultSet));
         } catch (Exception e) {
             throw new RuntimeException(e);//origin exc never to be lost
         }
@@ -46,10 +40,7 @@ public class CityDao {      // dao - data access object
 
             List<City> list = new ArrayList<>();
             while (resultSet.next()) {
-                long id = resultSet.getLong("id");
-                String name = resultSet.getString("name");
-                long population = resultSet.getLong("population");
-                list.add(new City(id, name, population));
+                list.add(makeCityFromRS(resultSet));
             }
             return list;
         } catch (Exception e) {
@@ -64,23 +55,37 @@ public class CityDao {      // dao - data access object
      */
     public List<City> find10MostPopulatedCities() {
         try {
-            Statement statement = connection.createStatement();
-
-            ResultSet resultSet = statement.executeQuery("select id, name, population from city order by population desc limit 10");
-
-            List<City> list = new ArrayList<>();
-
-            while (resultSet.next()) {
-                long id = resultSet.getLong("id");
-                String name = resultSet.getString("name");
-                long population = resultSet.getLong("population");
-                list.add(new City(id, name, population));
-            }
-            return list;
+            return find10MostPopulatedCities0();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
+    private List<City> find10MostPopulatedCities0() throws SQLException{
+        Statement statement = connection.createStatement();
+
+        ResultSet resultSet = statement.executeQuery("select id, name, population from city order by population desc limit 10");
+
+        List<City> list = new ArrayList<>();
+
+        while (resultSet.next()) {
+            list.add(makeCityFromRS(resultSet));
+        }
+        return list;
+    }
+
+    private City makeCityFromRS(ResultSet rs) throws SQLException{
+
+        long id = rs.getLong("id");
+        String name = rs.getString("name");
+        long population = rs.getLong("population");
+        String countryCode = rs.getString("countryCode");
+
+        return new City(id,name,population,countryCode);
+
+    }
+
+
 }
 
 // 1) add getAll() method -> return all cities, which type is it?
