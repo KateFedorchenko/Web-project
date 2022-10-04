@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,13 +38,20 @@ public class CityDao {      // dao - data access object
 
     }
 
-    public List<String> getAll() {
+    public List<City> getAll() {
         try {
             Statement statement = connection.createStatement();
 
-            ResultSet resultSet = statement.executeQuery("select name from city");
+            ResultSet resultSet = statement.executeQuery("select id, name, population from city");
 
-            return createListAndAddDataFromDB(resultSet);
+            List<City> list = new ArrayList<>();
+            while (resultSet.next()) {
+                long id = resultSet.getLong("id");
+                String name = resultSet.getString("name");
+                long population = resultSet.getLong("population");
+                list.add(new City(id, name, population));
+            }
+            return list;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -54,37 +62,25 @@ public class CityDao {      // dao - data access object
      *
      * @return 10 Most Populated Cities
      */
-    public List<String> find10MostPopulatedCities() {
+    public List<City> find10MostPopulatedCities() {
         try {
             Statement statement = connection.createStatement();
 
-            ResultSet resultSet = statement.executeQuery("select name from city order by population desc limit 10");
+            ResultSet resultSet = statement.executeQuery("select id, name, population from city order by population desc limit 10");
 
-            return createListAndAddDataFromDB(resultSet);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+            List<City> list = new ArrayList<>();
 
-    /**
-     * Attempt to get rid of duplicates.
-     * @param resultSet
-     * @return list
-     */
-    public List<String> createListAndAddDataFromDB(ResultSet resultSet) {
-        try {
-            List<String> list = new ArrayList<>();
             while (resultSet.next()) {
+                long id = resultSet.getLong("id");
                 String name = resultSet.getString("name");
-                list.add(name);
+                long population = resultSet.getLong("population");
+                list.add(new City(id, name, population));
             }
             return list;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
-
 }
 
 // 1) add getAll() method -> return all cities, which type is it?
