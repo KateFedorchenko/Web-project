@@ -7,8 +7,6 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import java.util.Stack;
-
 public class PersonDao {
     private Connection connection;
 
@@ -18,14 +16,10 @@ public class PersonDao {
 
     public Optional<Person> findByFirstAndLastName(String firstName, String lastName) {
         try {
-//            Statement statement = connection.createStatement(); // 99% useless -> Usually we have params
-//            ResultSet resultSet = statement.executeQuery("select * from persons where first_name = '" + firstName
-//                    + "' and last_name = '" + lastName + "'");
-
             PreparedStatement preparedStatement = connection.prepareStatement("select * from persons where " +
                     "first_name = ? and last_name = ?");
-            preparedStatement.setString(1,firstName);
-            preparedStatement.setString(2,lastName);
+            preparedStatement.setString(1, firstName);
+            preparedStatement.setString(2, lastName);
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -37,6 +31,54 @@ public class PersonDao {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void createPerson(Person person) {
+        try {
+            createPerson0(person);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void createPerson0(Person person) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("insert into persons (" +
+                "first_name, last_name, birthday, weight, height) values(?,?,?,?,?)");
+        preparedStatement.setString(1, person.getFirstName());
+        preparedStatement.setString(2, person.getLastName());
+        preparedStatement.setDate(3, Date.valueOf(person.getBirthday()));
+        preparedStatement.setBigDecimal(4, person.getWeight());
+        preparedStatement.setBigDecimal(5, person.getHeight());
+
+        preparedStatement.executeUpdate();
+    }
+
+    public void updatePerson(Person person) {
+        try {
+            updatePerson0(person);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void updatePerson0(Person person) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(
+                """
+                        update persons
+                        set
+                        birthday = ?,
+                        weight = ?,
+                        height = ?
+                        where first_name = ? and last_name = ?"""
+        );
+
+        preparedStatement.setDate(1, Date.valueOf(person.getBirthday()));
+        preparedStatement.setBigDecimal(2, person.getWeight());
+        preparedStatement.setBigDecimal(3, person.getHeight());
+        preparedStatement.setString(4, person.getFirstName());
+        preparedStatement.setString(5, person.getLastName());
+
+        preparedStatement.executeUpdate();
     }
 
     private Person makePersonFromRS(ResultSet rs) throws SQLException {
@@ -53,5 +95,5 @@ public class PersonDao {
 }
 
 
-// sql injections - youtube - computerphile channel. To protect from sql injections we use prepared statements
-// Dao Code above to be remade due to new data from sql injections ?
+// DeleteByPrimaryKeys(){}
+// DeleteAll(){} means delete all records in db --- NO TRUNCATE here!!!
