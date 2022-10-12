@@ -17,9 +17,15 @@ public class CityDao {      // dao - data access object
 
     public Optional<City> findById(long id) {
         try {
-            Statement statement = connection.createStatement();
+//            Statement statement = connection.createStatement();
+//
+//            ResultSet resultSet = statement.executeQuery("select * from city where id = " + id);
 
-            ResultSet resultSet = statement.executeQuery("select * from city where id = " + id);
+            PreparedStatement preparedStatement = connection.prepareStatement("select * from city where id = ?");
+
+            preparedStatement.setString(1,"id");
+
+            ResultSet resultSet = preparedStatement.executeQuery();
 
             if (!resultSet.next()) {
                 return Optional.empty();
@@ -34,7 +40,7 @@ public class CityDao {      // dao - data access object
 
     public List<City> getAll() {
         try {
-            Statement statement = connection.createStatement();
+            Statement statement = connection.createStatement();     // no prepared statement because of param absence
 
             ResultSet resultSet = statement.executeQuery("select id, name, population from city");
 

@@ -3,6 +3,7 @@ package kate.db.dao;
 import kate.db.model.Country;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -18,9 +19,15 @@ public class CountryDao {
 
     public Optional<Country> findByCode(String code) {
         try {
-            Statement statement = connection.createStatement();
+//            Statement statement = connection.createStatement();
+//
+//            ResultSet resultSet = statement.executeQuery("select * from country where code=\"" + code + "\"");
 
-            ResultSet resultSet = statement.executeQuery("select * from country where code=\"" + code + "\"");
+            PreparedStatement preparedStatement = connection.prepareStatement("select * from country where code = ?");
+            preparedStatement.setString(1, "code");
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
 
             if (!resultSet.next()) {
                 return Optional.empty();
@@ -61,6 +68,10 @@ public class CountryDao {
 
             ResultSet resultSet = statement.executeQuery("select name from country order by population desc limit 10");
 
+            PreparedStatement preparedStatement = connection.prepareStatement("select name from country order by population desc limit 10");
+
+
+
             return createListAndAddDataFromDB(resultSet);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -69,9 +80,14 @@ public class CountryDao {
 
     public List<String> findAllCountriesWhichStartsAt(String c) {
         try {
-            Statement statement = connection.createStatement();
+//            Statement statement = connection.createStatement();
+//
+//            ResultSet resultSet = statement.executeQuery("select * from country where name like \"" + c + "%\"");
+//
+            PreparedStatement preparedStatement = connection.prepareStatement("select * from country where name like \"?%\"");
+            preparedStatement.setString(1,"c");
 
-            ResultSet resultSet = statement.executeQuery("select * from country where name like \"" + c + "%\"");
+            ResultSet resultSet = preparedStatement.executeQuery();
 
             return createListAndAddDataFromDB(resultSet);
         } catch (Exception e) {
