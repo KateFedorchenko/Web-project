@@ -24,7 +24,7 @@ public class CountryDao {
 //            ResultSet resultSet = statement.executeQuery("select * from country where code=\"" + code + "\"");
 
             PreparedStatement preparedStatement = connection.prepareStatement("select * from country where code = ?");
-            preparedStatement.setString(1, "code");
+            preparedStatement.setString(1, code);
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -70,8 +70,6 @@ public class CountryDao {
 
             PreparedStatement preparedStatement = connection.prepareStatement("select name from country order by population desc limit 10");
 
-
-
             return createListAndAddDataFromDB(resultSet);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -84,8 +82,8 @@ public class CountryDao {
 //
 //            ResultSet resultSet = statement.executeQuery("select * from country where name like \"" + c + "%\"");
 //
-            PreparedStatement preparedStatement = connection.prepareStatement("select * from country where name like \"?%\"");
-            preparedStatement.setString(1,"c");
+            PreparedStatement preparedStatement = connection.prepareStatement("select * from country where name like ?");
+            preparedStatement.setString(1, c + "%");
 
             ResultSet resultSet = preparedStatement.executeQuery();
 

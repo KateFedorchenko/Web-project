@@ -23,7 +23,7 @@ public class CityDao {      // dao - data access object
 
             PreparedStatement preparedStatement = connection.prepareStatement("select * from city where id = ?");
 
-            preparedStatement.setString(1,"id");
+            preparedStatement.setLong(1,id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
