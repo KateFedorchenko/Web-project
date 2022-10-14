@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -72,6 +73,27 @@ class PersonDaoTest {
         Optional<Person> optionalPerson = personDao.findByFirstAndLastName(EXISTING_PERSON.getFirstName(), EXISTING_PERSON.getLastName());
         assertEquals(UPDATED_EXISTING_PERSON,optionalPerson.get());
     }
+
+    @Test
+    void whenUpdatedNonExistingPersonShouldNotFindUpdatedRecord() {
+        personDao.updatePerson(NON_EXISTING_PERSON);
+//        assertDoesNotThrow();     // I want to check that the method does not throw RuntimeException -- how?
+    }
+
+    @Test
+    void whenDeletedExistingPersonShouldNotFindRecord(){
+        personDao.deleteByPrimaryKeys(EXISTING_PERSON.getFirstName(),EXISTING_PERSON.getLastName());
+        Optional<Person> optionalPerson = personDao.findByFirstAndLastName(EXISTING_PERSON.getFirstName(), EXISTING_PERSON.getLastName());
+        assertTrue(optionalPerson.isEmpty());
+    }
+
+    @Test
+    void whenDeletedAllRowsShouldReturnNothing(){
+        personDao.deleteAll();
+        Optional<Person> optionalPerson = personDao.findByFirstAndLastName(EXISTING_PERSON.getFirstName(), EXISTING_PERSON.getLastName());
+        assertTrue(optionalPerson.isEmpty());
+    }
+
 
 }
 

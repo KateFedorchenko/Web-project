@@ -75,11 +75,58 @@ public class PersonDao {
         preparedStatement.setDate(1, Date.valueOf(person.getBirthday()));
         preparedStatement.setBigDecimal(2, person.getWeight());
         preparedStatement.setBigDecimal(3, person.getHeight());
-        preparedStatement.setString(4, person.getFirstName());
-        preparedStatement.setString(5, person.getLastName());
+        String firstName = person.getFirstName();
+        preparedStatement.setString(4, firstName);
+        String lastName = person.getLastName();
+        preparedStatement.setString(5, lastName);
+
+        Optional<Person> byFirstAndLastName = findByFirstAndLastName(firstName, lastName);
+        if(byFirstAndLastName.isEmpty()){
+            throw new RuntimeException("No such person found!");
+        }
 
         preparedStatement.executeUpdate();
     }
+
+    public void deleteByPrimaryKeys(String firstname, String lastname){
+        try {
+            deleteByPrimaryKeys0(firstname,lastname);
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void deleteByPrimaryKeys0(String firstname, String lastname) throws SQLException{
+        PreparedStatement preparedStatement = connection.prepareStatement(
+                """
+                        DELETE FROM persons
+                        WHERE first_name = ? AND
+                        last_name = ?
+                        """
+        );
+        preparedStatement.setString(1,firstname);
+        preparedStatement.setString(2, lastname);
+
+        preparedStatement.executeUpdate();
+    }
+
+    private void deleteAll0() throws SQLException{
+        PreparedStatement preparedStatement = connection.prepareStatement(
+                """
+                        DELETE FROM persons;
+                        """
+        );
+        preparedStatement.executeUpdate();
+    }
+
+    public void deleteAll(){
+        try{
+            deleteAll0();
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
 
     private Person makePersonFromRS(ResultSet rs) throws SQLException {
         String firstName = rs.getString("first_name");
@@ -90,7 +137,6 @@ public class PersonDao {
 
         return new Person(firstName, lastName, birthday, weight, height);
     }
-
 
 }
 
