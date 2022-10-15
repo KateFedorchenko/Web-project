@@ -76,8 +76,8 @@ class PersonDaoTest {
 
     @Test
     void whenUpdatedNonExistingPersonShouldNotFindUpdatedRecord() {
-        personDao.updatePerson(NON_EXISTING_PERSON);
-//        assertDoesNotThrow();     // I want to check that the method does not throw RuntimeException -- how?
+        Exception exception = assertThrows(Exception.class, () -> personDao.updatePerson(NON_EXISTING_PERSON));
+        assertEquals("No such person found!", exception.getMessage());
     }
 
     @Test
