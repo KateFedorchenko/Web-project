@@ -80,23 +80,21 @@ public class PersonDao {
         String lastName = person.getLastName();
         preparedStatement.setString(5, lastName);
 
-        Optional<Person> byFirstAndLastName = findByFirstAndLastName(firstName, lastName);
-        if(byFirstAndLastName.isEmpty()){
+        int affectedRows = preparedStatement.executeUpdate();
+        if (affectedRows == 0) {
             throw new RuntimeException("No such person found!");
         }
-
-        preparedStatement.executeUpdate();
     }
 
-    public void deleteByPrimaryKeys(String firstname, String lastname){
+    public void deleteByPrimaryKeys(String firstname, String lastname) {
         try {
-            deleteByPrimaryKeys0(firstname,lastname);
-        } catch (SQLException e){
+            deleteByPrimaryKeys0(firstname, lastname);
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void deleteByPrimaryKeys0(String firstname, String lastname) throws SQLException{
+    private void deleteByPrimaryKeys0(String firstname, String lastname) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(
                 """
                         DELETE FROM persons
@@ -104,13 +102,13 @@ public class PersonDao {
                         last_name = ?
                         """
         );
-        preparedStatement.setString(1,firstname);
+        preparedStatement.setString(1, firstname);
         preparedStatement.setString(2, lastname);
 
         preparedStatement.executeUpdate();
     }
 
-    private void deleteAll0() throws SQLException{
+    private void deleteAll0() throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(
                 """
                         DELETE FROM persons;
@@ -119,10 +117,10 @@ public class PersonDao {
         preparedStatement.executeUpdate();
     }
 
-    public void deleteAll(){
-        try{
+    public void deleteAll() {
+        try {
             deleteAll0();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
