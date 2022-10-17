@@ -68,3 +68,7 @@ class AccountsDaoTest {
 // (3 - to save or discard the changes).
 
 // separate project !
+
+// Questions:
+// 1) singleton class - why?
+// 2)  length() is not accurate - why?
