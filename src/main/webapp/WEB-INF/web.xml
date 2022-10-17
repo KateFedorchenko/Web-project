@@ -21,4 +21,13 @@
         <servlet-name>ExpensesJournal</servlet-name>
         <url-pattern>/expenses-journal</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Warehouse</servlet-name>
+        <servlet-class>kate.warehouse.Warehouse</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Warehouse</servlet-name>
+        <url-pattern>/warehouse</url-pattern>
+    </servlet-mapping>
 </web-app>
