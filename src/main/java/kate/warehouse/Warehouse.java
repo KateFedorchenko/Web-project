@@ -28,8 +28,4 @@ public class Warehouse extends HttpServlet {
 //        List<Item> allItemsFromDB = itemDao.getAllItemsFromDB();
 ////        return JSONArray.toJSONString(allItemsFromDB);
 //    }
-
-
-
-
 }

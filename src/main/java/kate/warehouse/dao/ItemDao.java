@@ -41,6 +41,4 @@ public class ItemDao {
 
         return new Item(id, name, quantity);
     }
-
-
 }
