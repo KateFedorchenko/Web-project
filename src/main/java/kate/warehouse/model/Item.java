@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 @EqualsAndHashCode
 @ToString
 public class Item {
-    private long id;
-    private String name;
-    private BigDecimal quantity;
+     public long id;
+     public String name;
+     public BigDecimal quantity;
 }
 

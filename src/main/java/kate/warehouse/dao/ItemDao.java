@@ -4,10 +4,7 @@ import kate.db.model.City;
 import kate.warehouse.model.Item;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +18,10 @@ public class ItemDao {
 
     public List<Item> getAllItemsFromDB() {
         try {
+            Class.forName("com.mysql.cj.jdbc.Driver");      //load class
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/warehouse","root","1234");
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from item");
+            ResultSet resultSet = statement.executeQuery("select * from items");
 
             List<Item> list = new ArrayList<>();
             while (resultSet.next()) {
