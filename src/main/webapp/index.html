@@ -1,15 +1,93 @@
 <!DOCTYPE html>
 <html>
+<script>
+    function generateTable() {
+  // creates a <table> element and a <tbody> element
+  const tbl = document.createElement("table");
+  tbl.setAttribute("id","content-table");
+  const tblBody = document.createElement("tbody");
+
+  let response = getAllItems();
+  for(let el of response){
+    const row = document.createElement("tr");
+    {
+      const cell = document.createElement("td");
+      const celltext = document.createTextNode(el.name);
+
+      cell.appendChild(celltext);
+      row.appendChild(cell);
+    }
+    {
+      const cell = document.createElement("td");
+      const celltext = document.createTextNode(el.quantity);
+
+      cell.appendChild(celltext);
+      row.appendChild(cell);
+    }
+    
+    tblBody.appendChild(row);
+  }
+
+  // // creating all cells
+  // for (let i = 0; i < 2; i++) {
+  //   // creates a table row
+  //   const row = document.createElement("tr");
+
+  //   for (let j = 0; j < 2; j++) {
+  //     // Create a <td> element and a text node, make the text
+  //     // node the contents of the <td>, and put the <td> at
+  //     // the end of the table row
+  //     const cell = document.createElement("td");
+  //     const cellText = document.createTextNode(`cell in row ${i}, column ${j}`);
+  //     cell.appendChild(cellText);
+  //     row.appendChild(cell);
+  //   }
+
+  //   // add the row to the end of the table body
+  //   tblBody.appendChild(row);
+  // }
+
+  // put the <tbody> in the <table>
+  tbl.appendChild(tblBody);
+  // appends <table> into <body>
+  document.body.appendChild(tbl);
+  // sets the border attribute of tbl to '2'
+  tbl.setAttribute("border", "2");
+}
+    function getAllItems(){
+      var x = new XMLHttpRequest();
+      x.open("GET","http://localhost:8080/warehouse?operation=showItems",false);
+      x.send();
+      return JSON.parse(x.response);
+}
+    function clearTable(){
+      let el = document.getElementById("content-table");
+      el.remove();
+  }
+
+  function addRecord(name,quantity){
+    var x = new XMLHttpRequest();
+    x.open("POST",`http://localhost:8080/warehouse?operation=addRecord&name=${name}&quantity=${quantity}`,false);
+    x.send();
+  }
+
+</script>
 <head>
     <meta charset="UTF-8">
-    <title> Make some calculations </title>
+    <title>Warehouse</title>
 </head>
 <body>
-<form method="GET" action="/simple-servlet"/>
-<label>Insert numbers below for multiplying.</label>
-<input name="number1" type="text"/>
-<input name="number2" type="text"/>
-<input type="submit" value="Submit"/>
-</form>
+<input type="button" value="Generate a table" onclick="generateTable()" />
+<input type="button" value="Remove a table" onclick="clearTable()" />
+<input type="text" id="name" />
+<input type="text" id="quantity" />
+<input type="button" value="Add record" onclick="addRecord(name,quantity)" />
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Quantity</th>
+    </tr>
+
+</table>
 </body>
 </html>

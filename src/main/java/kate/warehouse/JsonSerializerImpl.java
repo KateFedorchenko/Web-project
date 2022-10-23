@@ -51,6 +51,7 @@ public class JsonSerializerImpl implements JsonSerializer {
         Class<?> aClass = o.getClass();
         Field[] fields = aClass.getDeclaredFields();
         for (Field field : fields) {
+            field.setAccessible(true);
             Object fieldVal = field.get(o);
             jsonObj.put(field.getName(), convertToValidJSONElement(fieldVal));
         }

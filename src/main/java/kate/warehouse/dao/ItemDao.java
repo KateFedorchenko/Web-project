@@ -15,7 +15,6 @@ public class ItemDao {
         this.connection = connection;
     }
 
-
     public List<Item> getAllItemsFromDB() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");      //load class
@@ -40,4 +39,8 @@ public class ItemDao {
 
         return new Item(id, name, quantity);
     }
+
+
+
+
 }

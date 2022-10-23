@@ -9,9 +9,10 @@ import kate.warehouse.dao.ItemDao;
 import kate.warehouse.model.Item;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.PreparedStatement;
 import java.util.List;
 
 public class Warehouse extends HttpServlet {
@@ -23,8 +24,20 @@ public class Warehouse extends HttpServlet {
         String operation = req.getParameter("operation");
         if(("showItems").equals(operation)){
             resp.getWriter().println(getItemList());
+        } else {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
+    }
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String operation = req.getParameter("operation");
+        if(("addRecord").equals(operation)){
+            String name = req.getParameter("name");
+            BigDecimal quantity = new BigDecimal(req.getParameter("quantity"));
+            addRecord(name,quantity);
+            resp.getWriter().println("The record has been added");
+        }
     }
 
 
@@ -45,4 +58,29 @@ public class Warehouse extends HttpServlet {
             throw new RuntimeException(s);
         }
     }
+
+    public void addRecord(String name, BigDecimal quantity){
+        try{
+            addRecord0(name,quantity);
+        } catch (Exception s){
+            throw new RuntimeException(s);
+        }
+    }
+
+    private void addRecord0(String name, BigDecimal quantity) throws Exception{
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/warehouse", "root", "1234");
+        itemDao = new ItemDao(connection);
+        PreparedStatement preparedStatement = connection.prepareStatement(
+                """
+                        insert into items (name, quantity) values (?,?);
+                        """
+        );
+        preparedStatement.setString(1, name);
+        preparedStatement.setBigDecimal(2, quantity);
+
+        preparedStatement.executeUpdate();
+    }
+
+
 }
