@@ -40,6 +40,16 @@ public class Warehouse extends HttpServlet {
         }
     }
 
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String operation = req.getParameter("operation");
+        if(("removeRecord").equals(operation)){
+            String name = req.getParameter("name");
+            removeRecord(name);
+            resp.getWriter().println("The record has been removed");
+        }
+    }
+
 
     private String getItemList0() throws Exception{
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -80,6 +90,28 @@ public class Warehouse extends HttpServlet {
         preparedStatement.setBigDecimal(2, quantity);
 
         preparedStatement.executeUpdate();
+    }
+
+    public void removeRecord(String name){
+        try {
+            removeRecord0(name);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void removeRecord0(String name) throws Exception{
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/warehouse", "root", "1234");
+        itemDao = new ItemDao(connection);
+        PreparedStatement preparedStatement = connection.prepareStatement(
+                """
+                        Delete from items
+                        where name = ?;
+                        """
+        );
+        preparedStatement.setString(1,name);
+        preparedStatement.execute();
     }
 
 

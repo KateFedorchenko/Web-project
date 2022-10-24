@@ -71,6 +71,12 @@
     x.send();
   }
 
+  function removeRecord(){
+    var x = new XMLHttpRequest();
+    x.open("DELETE",`http://localhost:8080/warehouse?operation=removeRecord&name=${nameDel}`,false);
+    x.send();
+  }
+
 </script>
 <head>
     <meta charset="UTF-8">
@@ -82,6 +88,8 @@
 <input type="text" id="name" />
 <input type="text" id="quantity" />
 <input type="button" value="Add record" onclick="addRecord(name,quantity)" />
+<input type="text" id="nameDel" />
+<input type="button" value="Remove record" onclick="removeRecord(nameDel)" />
 <table>
     <tr>
         <th>Name</th>
