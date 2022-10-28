@@ -1,6 +1,5 @@
 package kate.warehouse.dao;
 
-import kate.db.model.City;
 import kate.warehouse.model.Item;
 
 import java.math.BigDecimal;

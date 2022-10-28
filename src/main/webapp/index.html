@@ -1,32 +1,89 @@
 <!DOCTYPE html>
 <html>
+  <style>
+    table {
+     width: 25%; /* Ширина таблицы */
+     border-collapse: collapse; /* Убираем двойные линии */
+    }
+    thead {
+     background: #f5e8d0; /* Цвет фона заголовка */
+    }
+    td, th {
+     padding: 5px; /* Поля в ячейках */
+     border: 1px solid #333; /* Параметры рамки */
+    }
+    tbody tr:nth-child(even) {
+     background: #f0f0f0; /* Зебра */
+    }
+    input[type=text] {
+     width: 10%;
+     padding: 12px 20px;
+     margin: 8px 0;
+     box-sizing: border-box;
+     border: 2px solid grey;
+     border-radius: 7px;
+     background-color: #e0eeff;
+     color: black;
+    }
+    input[type=button], input[type=submit], input[type=reset] {
+     background-color: #5565c0;
+     border: none;
+     border-radius: 7px;
+     color: white;
+     padding: 16px 32px;
+     text-decoration: none;
+     margin: 4px 2px;
+     cursor: pointer;
+    }
+    input[type=submit]:hover {
+     background-color: #1f2547;
+    }
+    .container {
+     border-radius: 5px;
+     background-color: #f2f2f2;
+     padding: 20px;
+    }
+    h1, h2, h3, h4, h5{
+      font-family: 'Orienta', sans-serif;
+    }
+    h2 {
+      margin-left: 50px;
+      color: #343434;
+      font-weight: normal;
+      font-size: 30px;
+      line-height: 40px;
+    }
+   </style>
 <script>
+  var first_click = true;
     function generateTable() {
-  // creates a <table> element and a <tbody> element
-  const tbl = document.createElement("table");
-  tbl.setAttribute("id","content-table");
-  const tblBody = document.createElement("tbody");
+      if (first_click) {
+          // creates a <table> element and a <tbody> element
+          const tbl = document.createElement("table");
+          tbl.setAttribute("id","content-table");
+          const tblBody = document.createElement("tbody");
 
-  let response = getAllItems();
-  for(let el of response){
-    const row = document.createElement("tr");
-    {
-      const cell = document.createElement("td");
-      const celltext = document.createTextNode(el.name);
+          let response = getAllItems();
 
-      cell.appendChild(celltext);
-      row.appendChild(cell);
-    }
-    {
-      const cell = document.createElement("td");
-      const celltext = document.createTextNode(el.quantity);
+          for(let el of response){
+              const row = document.createElement("tr");
+              {
+              const cell = document.createElement("td");
+              const celltext = document.createTextNode(el.name);
 
-      cell.appendChild(celltext);
-      row.appendChild(cell);
-    }
+              cell.appendChild(celltext);
+              row.appendChild(cell);
+              }
+              {
+              const cell = document.createElement("td");
+              const celltext = document.createTextNode(el.quantity);
+
+              cell.appendChild(celltext);
+              row.appendChild(cell);
+              }
     
-    tblBody.appendChild(row);
-  }
+              tblBody.appendChild(row);
+            }
 
   // // creating all cells
   // for (let i = 0; i < 2; i++) {
@@ -48,11 +105,17 @@
   // }
 
   // put the <tbody> in the <table>
-  tbl.appendChild(tblBody);
+          tbl.appendChild(tblBody);
   // appends <table> into <body>
-  document.body.appendChild(tbl);
+          document.body.appendChild(tbl);
   // sets the border attribute of tbl to '2'
-  tbl.setAttribute("border", "2");
+          tbl.setAttribute("border", "2");
+          first_click = false;
+      } else {
+          clearTable();
+          first_click = true;
+          generateTable();
+      }
 }
     function getAllItems(){
       var x = new XMLHttpRequest();
@@ -64,38 +127,68 @@
       let el = document.getElementById("content-table");
       el.remove();
   }
-
-  function addRecord(name,quantity){
+    function addRecord(){
     var x = new XMLHttpRequest();
-    x.open("POST",`http://localhost:8080/warehouse?operation=addRecord&name=${name}&quantity=${quantity}`,false);
+    var name = document.getElementById("name");
+    var quantity = document.getElementById("quantity");
+    x.open("POST",`http://localhost:8080/warehouse?operation=addRecord&name=${name.value}&quantity=${quantity.value}`,false);
     x.send();
   }
-
-  function removeRecord(){
+    function removeRecord(){
     var x = new XMLHttpRequest();
-    x.open("DELETE",`http://localhost:8080/warehouse?operation=removeRecord&name=${nameDel}`,false);
+    var nameDel = document.getElementById("nameDel");
+    x.open("DELETE",`http://localhost:8080/warehouse?operation=removeRecord&name=${nameDel.value}`,false);
     x.send();
   }
-
 </script>
 <head>
     <meta charset="UTF-8">
     <title>Warehouse</title>
 </head>
 <body>
-<input type="button" value="Generate a table" onclick="generateTable()" />
-<input type="button" value="Remove a table" onclick="clearTable()" />
-<input type="text" id="name" />
-<input type="text" id="quantity" />
-<input type="button" value="Add record" onclick="addRecord(name,quantity)" />
-<input type="text" id="nameDel" />
-<input type="button" value="Remove record" onclick="removeRecord(nameDel)" />
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Quantity</th>
-    </tr>
+  <div>
+    <h2>Items: action form</h2>
+  </div>
 
-</table>
+  <div class="container">
+
+  <div>
+    <h4>You can add a new record. If the item is already in the list, 
+      the quantity of it will be summed automatically.
+    </h4>
+  </div>
+
+  <div>
+    <label for="name">Item name: </label>
+    <input type="text" id="name" />
+    <label for="quantity">Item quantity: </label>
+    <input type="text" id="quantity" />
+    <input style="background-color:green" type="button" value="Add a new record" onclick="addRecord()" />
+  </div>
+
+  <div>
+    <h4>Remove the record by inserting the name.</h4>
+  </div>
+
+  <div>
+    <label for="nameDel">Item name: </label>
+    <input type="text" id="nameDel" />
+    <input style="background-color:red" type="button" value="Remove the record" onclick="removeRecord()" />
+  </div>
+
+  <div>
+    <h4>To show the list, please, press the button below.</h4>
+    <input type="button" value="Show the item list" onclick="generateTable()" />
+  </div>
+
+</div>
+
 </body>
 </html>
+
+<!-- 
+TODO!  -->
+<!-- 1) Decorate the SPA.  
+2) Generate + Remove => Merge into one btn. 
+3) Distinct names in DB to be stored -> the quantity to be summed.
+4) updateTable() when events: remove DB. -->
