@@ -142,6 +142,9 @@
     var nameDel = document.getElementById("nameDel");
     x.open("DELETE",`http://localhost:8080/warehouse?operation=removeRecord&name=${nameDel.value}`,false);
     x.send();
+    clearTable();
+    first_click = true;
+    generateTable();
   }
 </script>
 <head>
