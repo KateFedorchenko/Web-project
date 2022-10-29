@@ -114,7 +114,7 @@
       } else {
           clearTable();
           first_click = true;
-          generateTable();
+
       }
 }
     function getAllItems(){
@@ -133,6 +133,9 @@
     var quantity = document.getElementById("quantity");
     x.open("POST",`http://localhost:8080/warehouse?operation=addRecord&name=${name.value}&quantity=${quantity.value}`,false);
     x.send();
+    clearTable();
+    first_click = true;
+    generateTable();
   }
     function removeRecord(){
     var x = new XMLHttpRequest();
